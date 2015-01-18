@@ -36,6 +36,8 @@ libraryDependencies ++= {
 
 xerial.sbt.Sonatype.sonatypeSettings
 
+packAutoSettings
+
 publishMavenStyle := true
 
 publishTo := {
