@@ -1,0 +1,14 @@
+[app]
+  version: 0.1.0-SNAPSHOT
+  org: com.github.alexarchambault
+  name: maven-app
+  class: com.github.alexarchambault.mavenapp.MavenApp
+[scala]
+  version: 2.10.4
+[repositories]
+  local
+  sonatype-releases: https://oss.sonatype.org/content/repositories/releases/
+  sonatype-snapshots: https://oss.sonatype.org/content/repositories/snapshots/
+  maven-central
+[boot]
+  directory: /Users/alexandre/.conscript/boot
