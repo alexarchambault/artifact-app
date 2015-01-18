@@ -2,11 +2,14 @@
 
 Run app from Ivy/maven modules
 
-## Install
+## Quick start
 
-Install with [conscript]
+    $ git clone https://github.com/alexarchambault/maven-app.git
+    $ cd maven-app
+    $ sbt pack
+    $ ./target/pack/bin/maven-app --help
 
-TODO
+[conscript](https://github.com/n8han/conscript) install coming soon.
 
 ## Usage
 
@@ -14,23 +17,26 @@ Run `maven-app --help` to get a list of the available options.
 
 Examples:
 
-    $ maven-app -M ""
-
-
-maven-app can run itself, e.g.:
+Run maven-app with itself, e.g.:
 
     $ maven-app -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
         -m com.github.alexarchambault.mavenapp.MavenApp \
+        --scala-version "2.11.5" \
         -- --help
 
 or,
 
     $ maven-app -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
         -m com.github.alexarchambault.mavenapp.MavenApp \
+        --scala-version "2.11.5" \
         -- -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
         -m com.github.alexarchambault.mavenapp.MavenApp \
+        --scala-version "2.11.5" \
         -- -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
         -m com.github.alexarchambault.mavenapp.MavenApp \
+        --scala-version "2.11.5" \
         -- --help
 
-which is maven-app, launching maven-app, launching maven-app, launching maven-app, printing its help message.
+which is maven-app, itself launching maven-app, itself launching maven-app, itself launching maven-app, itself printing its help message.
+
+More useful examples coming soon.
