@@ -13,6 +13,8 @@ object Parsers {
   def parseResolver(s: String): String \/ Resolver =
     if (s startsWith "sonatype:")
       Resolver.sonatypeRepo(s drop "sonatype:".length).right
+    else if (s startsWith "file:")
+      Resolver.file(s drop "file:".length).right
     else if (s == "local")
       Resolver.defaultLocal.right
     else if (s == "default-maven")
