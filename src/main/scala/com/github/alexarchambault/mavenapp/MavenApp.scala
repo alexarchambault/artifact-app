@@ -4,7 +4,7 @@ import java.io.File
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scalaz._, Scalaz._
-import sbt.{ ModuleID, DefaultMavenRepository, Resolver, CrossVersion }
+import sbt.{ ModuleID, DefaultMavenRepository, MavenRepository, Resolver, CrossVersion }
 import org.slf4j.LoggerFactory
 import jove.jvmfork.Fork
 import caseapp._
@@ -14,7 +14,7 @@ object Parsers {
     if (s startsWith "sonatype:")
       Resolver.sonatypeRepo(s drop "sonatype:".length).right
     else if (s startsWith "file:")
-      Resolver.file(s drop "file:".length).right
+      new MavenRepository(s"File ${s drop "file:".length}", s"${new File(s drop "file:".length) .toURI.toURL}").right
     else if (s == "local")
       Resolver.defaultLocal.right
     else if (s == "default-maven")
