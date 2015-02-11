@@ -1,42 +1,52 @@
-# maven-app
+# artifact-app
 
-Run app from Ivy/maven modules
+Run app from Ivy/artifact modules
+
+-- 
+
+artifact-app runs app from Ivy/Maven modules, a bit like
+[conscript](https://github.com/n8han/conscript) does, but
+in a more flexible way. Scala 2.11 applications are supported,
+and you don't have to add extra dependencies to your applications,
+these are run with standard `main` methods.
 
 ## Quick start
 
-    $ git clone https://github.com/alexarchambault/maven-app.git
-    $ cd maven-app
-    $ sbt pack
-    $ ./target/pack/bin/maven-app --help
+For now, the easiest way to setup artifact-app is to bootstrap it
+with [conscript](https://github.com/n8han/conscript),
 
-[conscript](https://github.com/n8han/conscript) install coming soon.
+    $ cs alexarchambault/artifact-app
+
+Then run it with
+
+    $ artifact-app # arguments ...
 
 ## Usage
 
-Run `maven-app --help` to get a list of the available options.
+Run `artifact-app --help` to get a list of the available options.
 
 Examples:
 
-Run maven-app with itself, e.g.:
+Run artifact-app with itself, e.g.:
 
-    $ maven-app -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.mavenapp.MavenApp \
+    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.MavenApp \
         --scala-version "2.11.5" \
         -- --help
 
 or,
 
-    $ maven-app -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.mavenapp.MavenApp \
+    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.MavenApp \
         --scala-version "2.11.5" \
-        -- -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.mavenapp.MavenApp \
+        -- -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.MavenApp \
         --scala-version "2.11.5" \
-        -- -S -M "com.github.alexarchambault %% maven-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.mavenapp.MavenApp \
+        -- -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.MavenApp \
         --scala-version "2.11.5" \
         -- --help
 
-which is maven-app, itself launching maven-app, itself launching maven-app, itself launching maven-app, itself printing its help message.
+which is artifact-app, itself launching artifact-app, itself launching artifact-app, itself launching artifact-app, itself printing its help message.
 
 More useful examples coming soon.

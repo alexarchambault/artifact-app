@@ -1,10 +1,10 @@
-package com.github.alexarchambault.mavenapp
+package com.github.alexarchambault.artifact.app
 
 import java.io.File
 import org.slf4j.Logger
-import sbt.Configurations._
-import sbt.cross.CrossVersionUtil
-import sbt._
+import jove.sbt.Configurations._
+import jove.sbt.cross.CrossVersionUtil
+import jove.sbt._
 
 object IvyUtil {
   private def fakeModule(deps: Seq[ModuleID], scalaFullVersion: Option[String], ivySbt: IvySbt): IvySbt#Module = {
@@ -20,7 +20,7 @@ object IvyUtil {
     }
 
     val moduleSetting: ModuleSettings = InlineConfiguration(
-      module = ModuleID("com.example.temp", "fake", "0.1.0-SNAPSHOT", Some("compile")),
+      module = ModuleID("fake.fake.fake", "fake", "0.1.0-SNAPSHOT", Some("compile")),
       moduleInfo = ModuleInfo(""),
       dependencies = deps,
       configurations = Seq(Compile, Test, Runtime),
@@ -58,7 +58,7 @@ object IvyUtil {
     update(scalaVersion, resolvers, modules, logger).toSeq.map(_._4)
 
   def classLoader(cp: Seq[File], sharedLoaderOption: Option[ClassLoader]): ClassLoader =
-    sbt.classpath.ClasspathUtilities.makeLoader(
+    jove.sbt.classpath.ClasspathUtilities.makeLoader(
       cp,
       sharedLoaderOption.orNull,
       sharedLoaderOption.orNull,

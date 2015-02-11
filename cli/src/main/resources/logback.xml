@@ -1,8 +1,8 @@
 <configuration>
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>logs/maven-app.log</file>
+    <file>${java.io.tmpdir}/artifact-app.log</file>
       <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-          <fileNamePattern>logs/maven-app.%i.log.zip</fileNamePattern>
+          <fileNamePattern>${java.io.tmpdir}/artifact-app.%i.log.zip</fileNamePattern>
           <minIndex>1</minIndex>
           <maxIndex>3</maxIndex>
       </rollingPolicy>
@@ -23,6 +23,5 @@
 
   <root level="debug">
     <appender-ref ref="FILE" />
-    <appender-ref ref="STDOUT" />
   </root>
 </configuration>
