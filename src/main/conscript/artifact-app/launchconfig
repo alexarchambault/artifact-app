@@ -1,6 +1,6 @@
 [app]
   version: 0.1.0-SNAPSHOT
-  org: com.github.alexarchambault
+  org: com.github.alexarchambault.artifact
   name: artifact-app
   class: com.github.alexarchambault.artifact.app.ArtifactApp
 [scala]
