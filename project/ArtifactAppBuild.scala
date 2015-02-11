@@ -43,7 +43,8 @@ object ArtifactAppBuild extends Build {
       crossScalaVersions := Seq("2.10.4", "2.11.5"),
       resolvers ++= Seq(
         Resolver.sonatypeRepo("releases"),
-        Resolver.sonatypeRepo("snapshots")
+        Resolver.sonatypeRepo("snapshots"),
+        "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
       ),
       libraryDependencies ++= Seq(
         "com.github.alexarchambault.jove.sbt" %% "ivy" % "0.13.8-SNAPSHOT",
@@ -64,7 +65,8 @@ object ArtifactAppBuild extends Build {
       crossScalaVersions := Seq("2.10.4", "2.11.5"),
       resolvers ++= Seq(
         Resolver.sonatypeRepo("releases"),
-        Resolver.sonatypeRepo("snapshots")
+        Resolver.sonatypeRepo("snapshots"),
+        "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
       ),
       libraryDependencies ++= Seq(
         "com.github.alexarchambault" %% "case-app" % "0.2.1",
