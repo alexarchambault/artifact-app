@@ -29,24 +29,27 @@ Examples:
 
 Run artifact-app with itself, e.g.:
 
-    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.artifact.app.MavenApp \
+    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app-cli % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.ArtifactAppCli \
         --scala-version "2.11.5" \
         -- --help
 
 or,
 
-    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.artifact.app.MavenApp \
+    $ artifact-app -S -M "com.github.alexarchambault.artifact %% artifact-app-cli % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.ArtifactAppCli \
         --scala-version "2.11.5" \
-        -- -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.artifact.app.MavenApp \
-        --scala-version "2.11.5" \
-        -- -S -M "com.github.alexarchambault.artifact %% artifact-app % 0.1.0-SNAPSHOT" \
-        -m com.github.alexarchambault.artifact.app.MavenApp \
+        -- -S -M "com.github.alexarchambault.artifact %% artifact-app-cli % 0.1.0-SNAPSHOT" \
+        -m com.github.alexarchambault.artifact.app.ArtifactAppCli \
         --scala-version "2.11.5" \
         -- --help
 
-which is artifact-app, itself launching artifact-app, itself launching artifact-app, itself launching artifact-app, itself printing its help message.
+which is artifact-app, itself launching artifact-app, itself launching artifact-app, itself printing its help message.
 
 More useful examples coming soon.
+
+--
+
+Copyright 2015 Alexandre Archambault
+
+Released under the Apache 2 license.
