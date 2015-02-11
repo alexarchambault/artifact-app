@@ -79,6 +79,7 @@ object ArtifactAppBuild extends Build {
           Seq()
       }
     )
+    .settings(conscript.Harness.conscriptSettings: _*)
     .settings(xerial.sbt.Sonatype.sonatypeSettings: _*)
     .settings(publishSettings: _*)
     .settings(xerial.sbt.Pack.packSettings: _*)

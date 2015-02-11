@@ -46,3 +46,16 @@ case class ArtifactAppCli(
 object ArtifactAppCli extends AppOf[ArtifactAppCli] {
   val parser = default
 }
+
+class ArtifactAppCliConscriptLaunch extends xsbti.AppMain {
+  def run(config: xsbti.AppConfiguration) =
+    try {
+      ArtifactAppCli.main(config.arguments)
+      Exit(0)
+    } catch {
+      case _: Exception =>
+        Exit(1)
+    }
+
+  case class Exit(code: Int) extends xsbti.Exit
+}
