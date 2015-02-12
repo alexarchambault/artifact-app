@@ -81,6 +81,36 @@ object ArtifactApp {
     fork: Boolean,
     printClassPath: Boolean,
     quiet: Boolean
+  ): String \/ (Seq[String] => Unit) =
+    temporary(
+      resolvers = resolvers,
+      noDefaultResolvers = noDefaultResolvers,
+      snapshotResolvers = snapshotResolvers,
+      modules = modules,
+      mainClass = mainClass,
+      scalaVersion = scalaVersion,
+      forceScalaVersion = forceScalaVersion,
+      forkJavaOption = forkJavaOption,
+      fork = fork,
+      printClassPath = printClassPath,
+      quiet = quiet,
+      extraResolvers = Nil
+    )
+
+  @deprecated("Temporary method, apply should be used instead if possible")
+  def temporary(
+    resolvers: List[String],
+    noDefaultResolvers: Boolean,
+    snapshotResolvers: Boolean,
+    modules: List[String],
+    mainClass: String,
+    scalaVersion: String,
+    forceScalaVersion: Boolean,
+    forkJavaOption: List[String],
+    fork: Boolean,
+    printClassPath: Boolean,
+    quiet: Boolean,
+    extraResolvers: List[Resolver]
   ): String \/ (Seq[String] => Unit) = {
     val defaultResolvers = List(
       Resolver.defaultLocal,
@@ -99,7 +129,7 @@ object ArtifactApp {
     } yield {
       val logger = LoggerFactory getLogger "ArtifactApp"
 
-      val resolvers = userResolvers ++ (if (noDefaultResolvers) Nil else defaultResolvers) ++ (if (snapshotResolvers || fork) defaultSnapshotResolvers else Nil)
+      val resolvers = extraResolvers ++ userResolvers ++ (if (noDefaultResolvers) Nil else defaultResolvers) ++ (if (snapshotResolvers || fork) defaultSnapshotResolvers else Nil)
       val _scalaVersion = Some(scalaVersion).filter(_.nonEmpty)
 
       val _cp = IvyUtil.classPath(
