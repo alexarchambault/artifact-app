@@ -6,6 +6,8 @@ import jove.sbt.Configurations._
 import jove.sbt.cross.CrossVersionUtil
 import jove.sbt._
 
+import scalaz.\/
+
 object IvyUtil {
   private def fakeModule(deps: Seq[ModuleID], scalaFullVersion: Option[String], ivySbt: IvySbt): IvySbt#Module = {
     val ivyScala = scalaFullVersion map { fv =>
@@ -54,8 +56,10 @@ object IvyUtil {
     )
   }
 
-  def classPath(scalaVersion: Option[String], resolvers: Seq[Resolver], modules: Seq[ModuleID], logger: Logger): Seq[File] =
-    update(scalaVersion, resolvers, modules, logger).toSeq.map(_._4)
+  def classPath(scalaVersion: Option[String], resolvers: Seq[Resolver], modules: Seq[ModuleID], logger: Logger): String \/ Seq[File] =
+    \/.fromTryCatchThrowable[Seq[File], jove.sbt.ResolveException]{
+      update(scalaVersion, resolvers, modules, logger).toSeq.map(_._4)
+    }.leftMap(_.getMessage)
 
   def classLoader(cp: Seq[File], sharedLoaderOption: Option[ClassLoader]): ClassLoader =
     jove.sbt.classpath.ClasspathUtilities.makeLoader(

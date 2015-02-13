@@ -2,7 +2,7 @@ package com.github.alexarchambault.artifact.app
 
 import java.io.File
 import java.net.{ URLClassLoader, URI }
-import org.slf4j.LoggerFactory
+import org.slf4j.{Logger, LoggerFactory}
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scalaz._, Scalaz._
@@ -122,64 +122,62 @@ object ArtifactApp {
       Resolver sonatypeRepo "snapshots"
     )
 
+    def forcedCp(_cp: Seq[File], _scalaVersion: Option[String], resolvers: List[Resolver], logger: Logger): String \/ Seq[File] = {
+      val hasLibrary = _cp.exists(_.getName startsWith "scala-library-")
+      val hasReflect = _cp.exists(_.getName startsWith "scala-reflect-")
+      val hasCompiler = _cp.exists(_.getName startsWith "scala-compiler-")
+
+      if (hasLibrary || hasReflect || hasCompiler) {
+        var scalaModules = List.empty[ModuleID]
+
+        if (hasLibrary)
+          scalaModules = ModuleID("org.scala-lang", "scala-library", _scalaVersion.get, Some("compile")) :: scalaModules
+
+        if (hasReflect)
+          scalaModules = ModuleID("org.scala-lang", "scala-reflect", _scalaVersion.get, Some("compile")) :: scalaModules
+
+        if (hasCompiler)
+          scalaModules = ModuleID("org.scala-lang", "scala-compiler", _scalaVersion.get, Some("compile")) :: scalaModules
+
+        IvyUtil.classPath(_scalaVersion, resolvers, scalaModules, logger) .map { forced =>
+          val filter = { f: File =>
+            val name = f.getName
+            name.startsWith("scala-library-") || name.startsWith("scala-compiler-") || name.startsWith("scala-reflect-")
+          }
+
+          _cp.filterNot(filter) ++ forced.filter(filter)
+        }
+      } else {
+        if (!quiet)
+          Console.err println s"Warning: no scala JAR found in calculated class path, cannot force scala version"
+        \/-(_cp)
+      }
+    }
+
     for {
       mainClass0 <- Some(mainClass.trim).filter(_.nonEmpty) toRightDisjunction "No main class specified"
       userResolvers <- Parsers parseResolvers resolvers
       modules <- Parsers parseModules modules
-    } yield {
-      val logger = LoggerFactory getLogger "ArtifactApp"
-
-      val resolvers = extraResolvers ++ userResolvers ++ (if (noDefaultResolvers) Nil else defaultResolvers) ++ (if (snapshotResolvers || fork) defaultSnapshotResolvers else Nil)
-      val _scalaVersion = Some(scalaVersion).filter(_.nonEmpty)
-
-      val _cp = IvyUtil.classPath(
+      logger = LoggerFactory getLogger "ArtifactApp"
+      resolvers = extraResolvers ++ userResolvers ++ (if (noDefaultResolvers) Nil else defaultResolvers) ++ (if (snapshotResolvers || fork) defaultSnapshotResolvers else Nil)
+      _scalaVersion = Some(scalaVersion).filter(_.nonEmpty)
+      _cp <- IvyUtil.classPath(
         _scalaVersion,
         resolvers,
         modules ++ (if (fork) Seq(ModuleID("com.github.alexarchambault.jove", "jvm-fork", "0.1.0-SNAPSHOT", Some("compile")).cross(CrossVersion.binary)) else Seq()),
         logger
       )
-
+      forcedOpt <- {
+        if (_scalaVersion.nonEmpty && forceScalaVersion) {
+          forcedCp(_cp, _scalaVersion, resolvers, logger).map(Some(_))
+        } else
+          \/-(None)
+      }
+    } yield {
       if (forceScalaVersion && _scalaVersion.isEmpty && !quiet)
         Console.err println s"Warning: no scala version specified, cannot force scala version"
 
-      val cp =
-        if (_scalaVersion.nonEmpty && forceScalaVersion) {
-          // FIXME Filtering could be more specific here
-
-          val hasLibrary = _cp.exists(_.getName startsWith "scala-library-")
-          val hasReflect = _cp.exists(_.getName startsWith "scala-reflect-")
-          val hasCompiler = _cp.exists(_.getName startsWith "scala-compiler-")
-
-          if (hasLibrary || hasReflect || hasCompiler) {
-            var scalaModules = List.empty[ModuleID]
-
-            if (hasLibrary)
-              scalaModules = ModuleID("org.scala-lang", "scala-library", _scalaVersion.get, Some("compile")) :: scalaModules
-
-            if (hasReflect)
-              scalaModules = ModuleID("org.scala-lang", "scala-reflect", _scalaVersion.get, Some("compile")) :: scalaModules
-
-            if (hasCompiler)
-              scalaModules = ModuleID("org.scala-lang", "scala-compiler", _scalaVersion.get, Some("compile")) :: scalaModules
-
-            val forced = IvyUtil.classPath(_scalaVersion, resolvers, scalaModules, logger)
-
-            val filter = { f: File =>
-              val name = f.getName
-              name.startsWith("scala-library-") || name.startsWith("scala-compiler-") || name.startsWith("scala-reflect-")
-            }
-
-            if (!quiet)
-              Console.err println s"Forced scala version to ${_scalaVersion.get}"
-
-            _cp.filterNot(filter) ++ forced.filter(filter)
-          } else {
-            if (!quiet)
-              Console.err println s"Warning: no scala JAR found in calculated class path, cannot force scala version"
-            _cp
-          }
-        } else
-          _cp
+      val cp = forcedOpt getOrElse _cp
 
       if (printClassPath) {
         Console.out println "Class path:"
