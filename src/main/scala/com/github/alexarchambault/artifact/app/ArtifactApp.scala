@@ -137,14 +137,23 @@ object ArtifactApp {
         if (hasCompiler)
           scalaModules = ModuleID("org.scala-lang", "scala-compiler", _scalaVersion.get, Some("compile")) :: scalaModules
 
-        IvyUtil.classPath(_scalaVersion, resolvers, scalaModules, logger) .map { forced =>
-          val filter = { f: File =>
-            val name = f.getName
-            name.startsWith("scala-library-") || name.startsWith("scala-compiler-") || name.startsWith("scala-reflect-")
+        if (!quiet)
+          Console.err println s"(Forcing Scala version) Fetching / updating ${scalaModules.length} artifacts"
+
+        val cp =
+          IvyUtil.classPath(_scalaVersion, resolvers, scalaModules, logger) .map { forced =>
+            val filter = { f: File =>
+              val name = f.getName
+              name.startsWith("scala-library-") || name.startsWith("scala-compiler-") || name.startsWith("scala-reflect-")
+            }
+
+            _cp.filterNot(filter) ++ forced.filter(filter)
           }
 
-          _cp.filterNot(filter) ++ forced.filter(filter)
-        }
+        if (!quiet)
+          Console.err println s"(Forcing Scala version) Done fetching / updating ${scalaModules.length} artifacts"
+
+        cp
       } else {
         if (!quiet)
           Console.err println s"Warning: no scala JAR found in calculated class path, cannot force scala version"
@@ -159,16 +168,28 @@ object ArtifactApp {
       logger = LoggerFactory getLogger "ArtifactApp"
       resolvers = extraResolvers ++ userResolvers ++ (if (noDefaultResolvers) Nil else defaultResolvers) ++ (if (snapshotResolvers || fork) defaultSnapshotResolvers else Nil)
       _scalaVersion = Some(scalaVersion).filter(_.nonEmpty)
-      _cp <- IvyUtil.classPath(
-        _scalaVersion,
-        resolvers,
-        modules ++ (if (fork) Seq(ModuleID("com.github.alexarchambault.jove", "jvm-fork", "0.1.0-SNAPSHOT", Some("compile")).cross(CrossVersion.binary)) else Seq()),
-        logger
-      )
+      _cp <- {
+        val _modules = modules ++ (if (fork) Seq(ModuleID("com.github.alexarchambault.jove", "jvm-fork", "0.1.0-SNAPSHOT", Some("compile")).cross(CrossVersion.binary)) else Seq())
+
+        if (!quiet)
+          Console.err println s"Fetching / updating ${_modules.length} artifacts"
+
+        val cp = IvyUtil.classPath(
+          _scalaVersion,
+          resolvers,
+          _modules,
+          logger
+        )
+
+        if (!quiet)
+          Console.err println s"Done fetching / updating ${_modules.length} artifacts"
+
+        cp
+      }
       forcedOpt <- {
-        if (_scalaVersion.nonEmpty && forceScalaVersion) {
+        if (_scalaVersion.nonEmpty && forceScalaVersion)
           forcedCp(_cp, _scalaVersion, resolvers, logger).map(Some(_))
-        } else
+        else
           \/-(None)
       }
     } yield {
