@@ -1,16 +1,14 @@
 # artifact-app
 
-Run app from Ivy/artifact modules
+Run apps from Ivy/artifact modules
 
 [![Build Status](https://travis-ci.org/alexarchambault/artifact-app.svg)](https://travis-ci.org/alexarchambault/artifact-app)
 
--- 
 
-artifact-app runs app from Ivy/Maven modules, a bit like
+artifact-app runs apps from Ivy/Maven modules, a bit like
 [conscript](https://github.com/n8han/conscript) does, but
-in a more flexible way. Scala 2.11 applications are supported,
-and you don't have to add extra dependencies to your applications,
-these are run with standard `main` methods.
+in a more flexible way. No extra dependencies have to be added
+to your applications, these are run with standard `main` methods.
 
 ## Usage as a library
 
