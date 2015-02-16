@@ -3,11 +3,9 @@ package com.github.alexarchambault.artifact.app
 import java.io.File
 import java.net.{ URLClassLoader, URI }
 import org.slf4j.{Logger, LoggerFactory}
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 import scalaz._, Scalaz._
 import jove.sbt.{ ModuleID, DefaultMavenRepository, Resolver, CrossVersion, Path }
-import jove.jvmfork.{ ProcessInfo, Fork }
+import jove.jvmfork.Fork
 
 object Parsers {
   // TODO Use the resolver parser from conscript?
@@ -189,9 +187,9 @@ object ArtifactApp {
         import concurrent.ExecutionContext.Implicits.global
 
         args: Seq[String] =>
-          val f = Fork(new File("."), forkJavaOption, cp.map(_.getAbsolutePath), mainClass0, args)
-          val ProcessInfo(_, completion) = Await.result(f, Duration.Inf)
-          val ret = Await.result(completion, Duration.Inf)
+          val process = Fork(new File("."), forkJavaOption, cp.map(_.getAbsolutePath), mainClass0, args)
+          process.waitFor()
+          val ret = process.exitValue()
           if (ret != 0)
             sys exit ret
           ()

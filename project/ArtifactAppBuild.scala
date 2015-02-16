@@ -49,7 +49,7 @@ object ArtifactAppBuild extends Build {
       libraryDependencies ++= Seq(
         "com.github.alexarchambault.jove.sbt" %% "ivy" % "0.13.8-SNAPSHOT",
         "com.github.alexarchambault.jove.sbt" %% "classpath" % "0.13.8-SNAPSHOT",
-        "com.github.alexarchambault.jove" %% "jvm-fork" % "0.1.0-SNAPSHOT",
+        "com.github.alexarchambault.jove" %% "jvm-fork" % "0.1.1-SNAPSHOT",
         "org.scalaz" %% "scalaz-core" % "7.1.0"
       )
     )
