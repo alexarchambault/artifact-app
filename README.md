@@ -21,7 +21,7 @@ libraryDependencies +=
 ```
 
 The main method exposed by artifact-app is the `apply` method
-of the singleton `com.github.alexarchambault.artifact.app.ArtifactApp`
+of the singleton `com.github.alexarchambault.artifact.app.ArtifactApp`,
 ```scala
 def apply(
   resolvers: List[String],
@@ -37,15 +37,18 @@ def apply(
   quiet: Boolean
 ): String \/ (Seq[String] => Unit)
 ```
-which returns either a function that can be called to run the
-`mainClass` class from a classpath calculated for the modules
-`modules` using the resolvers `resolvers`, or an error message.
+which returns either a function that can be called to run
+`mainClass` in a classpath calculated for
+`modules` using the `resolvers`, or an error message.
+
 Some default
 resolvers (sonatype, local, ...) are provided by default, and can be disabled
 with the `noDefaultResolvers` and `snapshotResolvers` options.
+
 `scalaVersion` suggests a Scala version to be used, and this version
 can be forced with the `forcedScalaVersion` flag (which can
 force the version of the Scala JARs on the classpath).
+
 The underlying app can be run from the same JVM, or from
 a fork with the `fork` flag. The `printClassPath` and `quiet`
 options control the verbosity of the launched app.
