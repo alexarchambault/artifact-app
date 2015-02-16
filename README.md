@@ -2,6 +2,8 @@
 
 Run app from Ivy/artifact modules
 
+[![Build Status](https://travis-ci.org/alexarchambault/artifact-app.svg)](https://travis-ci.org/alexarchambault/artifact-app)
+
 -- 
 
 artifact-app runs app from Ivy/Maven modules, a bit like
